@@ -10,6 +10,9 @@ class MoviesProvider extends ChangeNotifier {
   final String _baseUrl = "api.themoviedb.org";
   final String _language = 'es-Es';
 
+  //? logica para realizar el infinite scroll
+  int _popularPage = 0;
+
   //? para adherir los datos de la llamada async de los dos metodos
   //? deberian ser futures e inyectarse en el provider desde el uso de casos
   List<Movie> onDisplayMovies = [];
@@ -24,6 +27,7 @@ class MoviesProvider extends ChangeNotifier {
 
   //? metodo con la finalidad de evitar repetecion de codigo en las peticiones http
   //? voy implementar el metodo en getOnDisplayMovies() a modo de ejemplo
+  //? posibilidad de implementar un try-catch para el manejo de errores
   Future<String> _getJsonData(String endpoint, [int page = 1]) async {
     final url = Uri.https(_baseUrl, endpoint, {
       'api_key': _apiKey,
@@ -44,18 +48,28 @@ class MoviesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  //? sin implementar la funcion _getJsonData
+  //? ejemplo implementado _getJsonData
   void getPopularMovies() async {
-    final url = Uri.https(_baseUrl, '3/movie/popular', {
-      'api_key': _apiKey,
-      'language': _language,
-      'page': '1',
-    });
+    _popularPage++;
+    final jsonData = await _getJsonData('3/movie/popular');
 
-    final response = await http.get(url);
-    if (response.statusCode != 200) return log("Error");
-    final popularResponse = PopulaMoviesResponse.fromJson(response.body);
+    final popularResponse = PopulaMoviesResponse.fromJson(jsonData);
     onPopularMovies = [...onPopularMovies, ...popularResponse.results];
     notifyListeners();
   }
+
+  //? sin implementar la funcion _getJsonData
+  // void getPopularMovies() async {
+  //   final url = Uri.https(_baseUrl, '3/movie/popular', {
+  //     'api_key': _apiKey,
+  //     'language': _language,
+  //     'page': '1',
+  //   });
+
+  //   final response = await http.get(url);
+  //   if (response.statusCode != 200) return log("Error");
+  //   final popularResponse = PopulaMoviesResponse.fromJson(response.body);
+  //   onPopularMovies = [...onPopularMovies, ...popularResponse.results];
+  //   notifyListeners();
+  // }
 }
