@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:movie_app/helpers/debouncer.dart';
 import 'package:movie_app/models/models.dart';
+import 'package:movie_app/models/search_response.dart';
 
 class MoviesProvider extends ChangeNotifier {
   //?queries from TMDB api
@@ -17,6 +20,21 @@ class MoviesProvider extends ChangeNotifier {
   //? deberian ser futures e inyectarse en el provider desde el uso de casos
   List<Movie> onDisplayMovies = [];
   List<Movie> onPopularMovies = [];
+
+  //? int= movieId List<Cast> = lista de actores
+  //? es un mapa con una llave movieId que almacena una lista de actores de esa pelicula
+  Map<int, List<Cast>> moviesCast = {};
+
+  //!Stream: implemented in search delegate:
+  final debouncer = Debouncer(duration: const Duration(milliseconds: 500));
+  //? implementing a streamer to apply debounce technique
+  final StreamController<List<Movie>> _suggestionsStreamController =
+      StreamController.broadcast();
+
+  Stream<List<Movie>> get suggestionStream =>
+      _suggestionsStreamController.stream;
+
+  //!Stream
 
   //? constructor: inicializa estas dos funciones al comienzo de la aplicacion
   //? ya que la propiedad lazy del provider esta seteada en false
@@ -72,4 +90,41 @@ class MoviesProvider extends ChangeNotifier {
   //   onPopularMovies = [...onPopularMovies, ...popularResponse.results];
   //   notifyListeners();
   // }
+
+  //! ver cast actors
+  // getMovieCast(int movieId) async {
+  //   //todo: revisar el mapa
+  //   print("pidiendo info al servidor - Cast");
+  //   final jsonData = await _getJsonData('3/movie/$movieId/credits');
+  //   final creditResponse = CreditResponse.fromJson(jsonData);
+  //   moviesCast[movieId] = creditResponse.cast;
+  // }
+
+  Future<List<Movie>> searchMovie(String query) async {
+    final url = Uri.https(_baseUrl, '3/search/movie',
+        {'api_key': _apiKey, 'language': _language, 'query': query});
+    final response = await http.get(url);
+    final searchResponse = SearchResponse.fromJson(response.body);
+
+    return searchResponse.results;
+  }
+
+  void getSuggestionsByQuery(String searchTerm) {
+    debouncer.value = '';
+    debouncer.onValue = (value) async {
+      log("tenemos valor a buscar: $value");
+      final results = await searchMovie(value);
+      _suggestionsStreamController.add(results);
+    };
+
+    final timer = Timer.periodic(
+      const Duration(milliseconds: 200),
+      (_) {
+        debouncer.value = searchTerm;
+      },
+    );
+
+    Future.delayed(const Duration(milliseconds: 301))
+        .then((_) => timer.cancel());
+  }
 }

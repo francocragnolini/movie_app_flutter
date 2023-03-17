@@ -37,8 +37,10 @@ class CardSwiper extends StatelessWidget {
           //? Modelo Movie: creacion de un getter para obtener el fullpath de la imagen
           log(" CardSwipper: ${movie.fullPosterImg}");
           return GestureDetector(
-            onTap: () => Navigator.pushNamed(context, "details",
-                arguments: "movie-instance"),
+            onTap: () {
+              Navigator.pushNamed(context, "details", arguments: movie);
+              log(movie.title);
+            },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: FadeInImage(

@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 
+//! codigo de referencia
 class CastingCards extends StatelessWidget {
   const CastingCards({super.key});
 
