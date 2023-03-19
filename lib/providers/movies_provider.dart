@@ -91,14 +91,20 @@ class MoviesProvider extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  //! ver cast actors
-  // getMovieCast(int movieId) async {
-  //   //todo: revisar el mapa
-  //   print("pidiendo info al servidor - Cast");
-  //   final jsonData = await _getJsonData('3/movie/$movieId/credits');
-  //   final creditResponse = CreditResponse.fromJson(jsonData);
-  //   moviesCast[movieId] = creditResponse.cast;
-  // }
+  Future<List<Cast>> getMovieCast(int movieId) async {
+    //todo: revisar el map
+    //? evita realizar una nueva peticion si los datos estan en memoria
+    if (moviesCast.containsKey(movieId)) return moviesCast[movieId]!;
+
+    log('pidiendo Info al servidor -Cast');
+
+    final jsonData = await _getJsonData("3/movie/$movieId/credits");
+    final creditsResponse = CreditsResponse.fromJson(jsonData);
+    //? almacena en el mapa la respuesta  http
+    moviesCast[movieId] = creditsResponse.cast;
+
+    return creditsResponse.cast;
+  }
 
   Future<List<Movie>> searchMovie(String query) async {
     final url = Uri.https(_baseUrl, '3/search/movie',

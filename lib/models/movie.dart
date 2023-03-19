@@ -36,7 +36,7 @@ class Movie {
   // ! Getter agregado por el instructor para formar el fullpath
   get fullPosterImg {
     if (posterPath != null) {
-      return 'https://image.tmdb.org/t/p/w500${posterPath}';
+      return 'https://image.tmdb.org/t/p/w500$posterPath';
     }
 
     return 'https://i.stack.imgur.com/GNhxO.png';
@@ -44,8 +44,9 @@ class Movie {
 
   //!! Getter agregado por el instructor para formar el fullbackdrop
   get fullBackdropPath {
-    if (backdropPath != null)
-      return 'https://image.tmdb.org/t/p/w500${backdropPath}';
+    if (backdropPath != null) {
+      return 'https://image.tmdb.org/t/p/w500$backdropPath';
+    }
 
     return 'https://i.stack.imgur.com/GNhxO.png';
   }

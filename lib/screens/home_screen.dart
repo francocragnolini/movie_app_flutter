@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:movie_app/providers/movies_provider.dart';
 import 'package:movie_app/search/search_delegate.dart';
@@ -10,7 +12,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final moviesProvider = Provider.of<MoviesProvider>(context);
-    print(moviesProvider.onDisplayMovies);
+    log('HomeScreen: ${moviesProvider.onDisplayMovies}');
 
     return Scaffold(
       appBar: AppBar(

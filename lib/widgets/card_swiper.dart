@@ -22,6 +22,7 @@ class CardSwiper extends StatelessWidget {
       );
     }
 
+    // ignore: sized_box_for_whitespace
     return Container(
       width: double.infinity,
       height: size.height * 0.4, //? 50% del height del dispositivo

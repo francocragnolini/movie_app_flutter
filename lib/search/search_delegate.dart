@@ -45,6 +45,7 @@ class MovieSearchDelegate extends SearchDelegate {
   }
 
   Widget _emptyContainer() {
+    // ignore: avoid_unnecessary_containers
     return Container(
       child: const Center(
         child: Icon(
