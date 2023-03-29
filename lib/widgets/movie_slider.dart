@@ -46,7 +46,7 @@ class _MovieSliderState extends State<MovieSlider> {
     // ignore: sized_box_for_whitespace
     return Container(
       width: double.infinity,
-      height: 280,
+      height: 350,
       // color: Colors.red,
       child: Column(
         children: [
@@ -106,11 +106,13 @@ class _MoviePoster extends StatelessWidget {
               ),
             ),
           ),
-          Text(
-            movie.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
+          Expanded(
+            child: Text(
+              movie.title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       ),

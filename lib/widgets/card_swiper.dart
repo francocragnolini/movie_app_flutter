@@ -17,13 +17,15 @@ class CardSwiper extends StatelessWidget {
     if (movies.isEmpty) {
       return SizedBox(
         width: double.infinity,
-        height: size.height * 0.4,
+        height: size.height * 0.3,
         child: const CircularProgressIndicator(),
       );
     }
 
     // ignore: sized_box_for_whitespace
     return Container(
+      // margin agregado por mi
+      margin: const EdgeInsets.only(top: 20, bottom: 20),
       width: double.infinity,
       height: size.height * 0.4, //? 50% del height del dispositivo
       // color: Colors.red,
